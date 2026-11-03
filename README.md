@@ -5,7 +5,6 @@ Simulacion en wokwi: https://wokwi.com/projects/479639981254297601
 
 # Componentes
 
-|-----------------------|---------|-------------------------------|
 | Elemento              | Pin     | Funcion                       |
 |-----------------------|---------|-------------------------------|
 | DHT22                 | GPIO 4  | Temperatura y humedad del aire|
@@ -16,7 +15,6 @@ Simulacion en wokwi: https://wokwi.com/projects/479639981254297601
 | Relé y ventilador     | GPIO 27 | Ventilación                   |
 | led                   | GPIO 25 | Iluminación                   |
 | Buzzer                | GPIO 14 | Alerta local                  |
-|-----------------------|---------|-------------------------------|
 
 # Estructura
 
