@@ -20,12 +20,12 @@ Simulacion en wokwi: https://wokwi.com/projects/479639981254297601
 
 config.py 
 
-Sensores.py
+sensores.py
 
 actuadores.py
 
 control.py
 
-comunicacion.py
+mqtt_cliente.py
 
 main.py
