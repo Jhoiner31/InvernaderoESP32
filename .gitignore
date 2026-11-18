@@ -152,7 +152,7 @@ activemq-data/
 # Environments
 .env
 .envrc
-.venv
+.venv*/
 env/
 venv/
 ENV/
@@ -224,3 +224,6 @@ __marimo__/
 
 # Credenciales (WiFi, broker MQTT)
 secrets.py
+
+#Datos generados por la interfaz
+datos/
