@@ -20,6 +20,6 @@ def main(page: ft.Page):
 
     page.add(ft.Row(controls=[temp, hum_aire, hum_suelo, luz], spacing=10))
 
-
+    temp.actualizar(50, "crit")
 
 ft.run(main)

@@ -25,7 +25,12 @@ class TarjetaSensor(ft.Container):
             ]
         )
 
-    def actualizar(self, nuevo):
+    def actualizar(self, nuevo, estado):
+        paleta = aj.PALETAS["oscuro"]
+        color = paleta[estado]
+
         self.lbl_valor.value = f"{nuevo:.{self.decimales}f} {self.unidad}"
         self.barra.value = max(0, min(1, nuevo / self.maximo))
+        self.barra.color = color
+
         self.update()
