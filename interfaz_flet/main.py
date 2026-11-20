@@ -1,6 +1,17 @@
 import flet as ft
 import ajustes as aj
+import asyncio
+
 from componentes import TarjetaSensor
+from logica import evaluar_estado
+from simulador import Simulador
+
+SENSORES = [
+    ("temp", "Temperatura", "°C", 50, 1),
+    ("hum_aire", "Humedad del aire", "%", 100, 0),
+    ("hum_suelo", "Humedad del suelo", "%", 100, 0),
+    ("luz", "Luz ambiente", "%", 100, 0),
+]
 
 def main(page: ft.Page):
     paleta = aj.PALETAS["oscuro"]
@@ -13,13 +24,31 @@ def main(page: ft.Page):
     page.window.min_width = 900
     page.window.min_height = 650
 
-    temp = TarjetaSensor(titulo="Temperatura", unidad= "°C", maximo=50, decimales=1, expand=True)
-    luz = TarjetaSensor(titulo="Luz ambiente", unidad= "%", expand=True)
-    hum_aire = TarjetaSensor(titulo="Humedad del aire", unidad= "%", expand=True)
-    hum_suelo = TarjetaSensor(titulo="Humedad del suelo", unidad= "%", expand=True)
+    sim = Simulador()
+    umbrales = dict(aj.UMBRALES_INICIALES)
 
-    page.add(ft.Row(controls=[temp, hum_aire, hum_suelo, luz], spacing=10))
+    tarjetas = {}
 
-    temp.actualizar(50, "crit")
+    for clave, titulo, unidad, maximo, decimales in SENSORES:
+        tarjetas[clave] = TarjetaSensor(
+            titulo=titulo,
+            unidad=unidad,
+            maximo=maximo,
+            decimales=decimales,
+            expand=True,
+        )
+
+    page.add(ft.Row(controls=list(tarjetas.values()), spacing=10))
+
+    async def ciclo():
+        while True:
+            paquete = sim.paso()
+            if paquete is not None:
+                for clave, valor in paquete["sensores"].items():
+                    estado = evaluar_estado(clave, valor, umbrales)
+                    tarjetas[clave].actualizar(valor, estado)
+            await asyncio.sleep(aj.INTERVALO_MS / 1000)
+
+    page.run_task(ciclo)
 
 ft.run(main)
