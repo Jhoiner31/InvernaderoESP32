@@ -13,6 +13,12 @@ SENSORES = [
     ("luz", "Luz ambiente", "%", 100, 0),
 ]
 
+ACTUADORES = [
+    ("bomba", "Bomba de riego"),
+    ("ventilador", "Ventilador"),
+    ("luz", "Luz de crecimiento"),
+]
+
 def main(page: ft.Page):
     paleta = aj.PALETAS["oscuro"]
     page.title = "Invernadero inteligente"
@@ -27,6 +33,7 @@ def main(page: ft.Page):
     sim = Simulador()
     umbrales = dict(aj.UMBRALES_INICIALES)
 
+    #-----------------Tarjetas de sensores-------------
     tarjetas = {}
 
     for clave, titulo, unidad, maximo, decimales in SENSORES:
@@ -38,8 +45,67 @@ def main(page: ft.Page):
             expand=True,
         )
 
-    page.add(ft.Row(controls=list(tarjetas.values()), spacing=10))
+    # ---------- Interruptores de actuadores ----------
+    def cambiar_actuador(e):
+        sim.comando(e.control.data, e.control.value)
 
+    switches = {}
+    for clave, nombre in ACTUADORES:
+        switches[clave] = ft.Switch(
+            label=nombre,
+            value=False,
+            disabled=True,
+            data=clave,
+            on_change=cambiar_actuador,
+        )
+
+    # ---------- Selector de modo ----------
+    def cambiar_modo(e):
+        modo = e.control.value
+        sim.cambiar_modo(modo)
+        for sw in switches.values():
+            sw.disabled = modo == "auto"
+        page.update()
+
+    dd_modo = ft.Dropdown(
+        label="Modo",
+        value="auto",
+        width=180,
+        options=[
+            ft.DropdownOption(key="auto", text="Automático"),
+            ft.DropdownOption(key="manual", text="Manual"),
+        ],
+        on_select=cambiar_modo,
+    )
+
+    # ---------- Distribución ----------
+    encabezado = ft.Row(
+        controls=[
+            ft.Text("Invernadero inteligente", size=22, weight=ft.FontWeight.BOLD),
+            dd_modo,
+        ],
+        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+    )
+
+    panel_actuadores = ft.Container(
+        bgcolor=paleta["panel"],
+        padding=15,
+        border_radius=10,
+        content=ft.Column(
+            controls=[
+                ft.Text("Actuadores", size=13, color=paleta["tenue"]),
+                *switches.values(),
+            ],
+        ),
+    )
+
+    page.add(
+        encabezado,
+        ft.Row(controls=list(tarjetas.values()), spacing=10),
+        panel_actuadores,
+    )
+
+    # ---------- Ciclo periódico ----------
     async def ciclo():
         while True:
             paquete = sim.paso()
@@ -47,6 +113,9 @@ def main(page: ft.Page):
                 for clave, valor in paquete["sensores"].items():
                     estado = evaluar_estado(clave, valor, umbrales)
                     tarjetas[clave].actualizar(valor, estado)
+                for clave, valor in paquete["actuadores"].items():
+                    switches[clave].value = bool(valor)
+                page.update()
             await asyncio.sleep(aj.INTERVALO_MS / 1000)
 
     page.run_task(ciclo)
