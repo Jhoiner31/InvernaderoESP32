@@ -4,33 +4,20 @@ Aqui van los valores que se repiten en varios archivos (colores, umbrales,
 nombres de variables...). Asi, si hay que cambiar algo, se cambia en un solo lugar.
 Los valores de umbrales y tiempos son los mismos del firmware (firmware/config.py).
 """
-import os
 
 # ---------- Apariencia ----------
 FUENTE = "Segoe UI"
-PALETAS = {
-    "oscuro": {
-        "fondo": "#0f1a14",
-        "panel": "#16241c",
-        "borde": "#26382d",
-        "texto": "#e4efe7",
-        "tenue": "#8fa89a",
-        "acento": "#5fae7e",
-        "ok": "#4caf7a",
-        "aviso": "#d9b44a",
-        "crit": "#e0645c",
-    },
-    "claro": {
-        "fondo": "#f1f6f2",
-        "panel": "#ffffff",
-        "borde": "#d5e2d8",
-        "texto": "#1f2d25",
-        "tenue": "#5f7568",
-        "acento": "#3f8f62",
-        "ok": "#2e8b57",
-        "aviso": "#b98a14",
-        "crit": "#c8453d",
-    },
+COLORES = {
+    "fondo": "#0d1117",
+    "panel": "#161b22",
+    "borde": "#30363d",
+    "texto": "#e6edf3",
+    "tenue": "#8b949e",
+    "acento": "#388bfd",
+    "ok": "#3fb950",         # verde    -> normal
+    "aviso": "#d29922",      # amarillo -> precaución
+    "crit": "#f85149",       # rojo     -> crítico
+    "fila_alerta": "#3d1418",
 }
 TEXTO_ESTADO = {"ok": "Normal", "aviso": "Precaución", "crit": "Crítico"}
 
@@ -41,9 +28,21 @@ TIEMPO_ESPERA = 30    # s de espera antes de volver a regar
 CRIT_SUELO = 20       # % por debajo -> alerta
 CRIT_TEMP = 35        # °C por encima -> alerta
 
-# ---------- Comportamiento de la interfaz ----------
-INTERVALO_MS = 1000       # cada cuanto llega un dato simulado
-TIMEOUT_CONEXION = 10     # s sin datos -> "Sin conexión"
+# ---------- Contenido de la pantalla ----------
+# Tarjetas del monitor: (clave, titulo, unidad)
+SENSORES = [
+    ("temp", "Temperatura", "°C", 50, 1, "ok"),
+    ("hum_aire", "Humedad del aire", "%", 100, 0, "ok"),
+    ("hum_suelo", "Humedad del suelo", "%", 100, 0, "ok"),
+    ("luz", "Luz ambiente", "%", 100, 0, "ok")
+]
+
+# Actuadores: (clave, etiqueta)
+ACTUADORES = [
+    ("bomba", "Bomba de riego"),
+    ("ventilador", "Ventilador"),
+    ("luz", "Luz de crecimiento"),
+]
 
 # Campos de umbrales: (clave, nombre, unidad, minimo, maximo)
 UMBRALES_CAMPOS = [
@@ -53,13 +52,9 @@ UMBRALES_CAMPOS = [
 ]
 
 # Variables graficables: nombre -> (clave, unidad, (ymin, ymax), color)
-VARIABLES = {
-    "Temperatura (°C)": ("temp", "°C", (10, 50), "#f0883e"),
-    "Humedad del aire (%)": ("hum_aire", "%", (0, 100), "#58a6ff"),
-    "Humedad del suelo (%)": ("hum_suelo", "%", (0, 100), "#3fb950"),
-    "Luz (%)": ("luz", "%", (0, 100), "#e3b341"),
-}
-RANGOS = {"1 min": 60, "10 min": 600, "1 h": 3600}
+VARIABLES = ["Temperatura (°C)", "Humedad del aire (%)",
+             "Humedad del suelo (%)", "Luz (%)"]
+RANGOS = ["1 min", "10 min", "1 h"]
 
 NOMBRES_ALERTA = {"suelo_seco": "Suelo muy seco", "temp_alta": "Temperatura muy alta"}
 TEXTO_ACTUADORES = {
@@ -67,10 +62,4 @@ TEXTO_ACTUADORES = {
     "ventilador": ("Ventilador encendido", "Ventilador apagado"),
     "luz": ("Luz de crecimiento encendida", "Luz de crecimiento apagada"),
 }
-
-# ---------- Historial ----------
-CARPETA = os.path.dirname(os.path.abspath(__file__))
-ARCHIVO_CSV = os.path.join(CARPETA, "datos", "historial.csv")
-FORMATO_FECHA = "%Y-%m-%d %H:%M:%S"
-COLUMNAS_CSV = ["fecha", "temp", "hum_aire", "hum_suelo", "luz",
-                "modo", "bomba", "ventilador", "luz_crecimiento"]
+MODOS = ["auto", "manual"]
