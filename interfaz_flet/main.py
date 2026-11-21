@@ -1,4 +1,5 @@
 from funciones import *
+from componentes import TarjetaSensor
 
 colores = aj.COLORES
 sensores = aj.SENSORES
@@ -41,7 +42,6 @@ def main(page: ft.Page):
                     expand=True,
                     controls=[
                         ft.Container(content=crear_monitor(), padding=10),
-                        ft.Container(content=crear_historial(), padding=10),
                     ],
                 ),
             ],
@@ -50,7 +50,7 @@ def main(page: ft.Page):
 
     page.add(
         ft.Column(
-            controls=[crear_barra_superior(), crear_banner()],
+            controls=[crear_barra_superior(), crear_banner(), pestanas],
             spacing=0,
             expand=True,
         )
