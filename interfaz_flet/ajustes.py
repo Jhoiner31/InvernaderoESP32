@@ -63,3 +63,8 @@ TEXTO_ACTUADORES = {
     "luz": ("Luz de crecimiento encendida", "Luz de crecimiento apagada"),
 }
 MODOS = ["auto", "manual"]
+
+# Historial
+RANGOS_HISTORIAL = ["Última hora", "Últimas 24 h", "Últimos 7 días", "Todo"]
+COLUMNAS_HISTORIAL = ["Fecha y hora", "Temperatura (°C)", "Humedad del aire (%)",
+                      "Humedad del suelo (%)", "Luz (%)"]

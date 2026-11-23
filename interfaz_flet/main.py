@@ -16,7 +16,7 @@ def main(page: ft.Page):
     page.window.min_width = 1100
     page.window.min_height = 760
 
-    #-----------------Tarjetas de sensores-------------
+    # Tarjetas de sensores
     tarjetas = {}
 
     for clave, titulo, unidad, maximo, decimales, estado in sensores:
@@ -42,6 +42,7 @@ def main(page: ft.Page):
                     expand=True,
                     controls=[
                         ft.Container(content=crear_monitor(), padding=10),
+                        ft.Container(content=crear_historial(), padding=10),
                     ],
                 ),
             ],

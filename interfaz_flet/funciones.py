@@ -183,3 +183,54 @@ def crear_monitor():
         expand=True,
     )
 
+def tarjeta_resumen(titulo):
+    "Cuadro pequeño con un dato resumen (minimo, maximo, promedio)."
+    return ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.Text(titulo, size=13, color=colores["tenue"]),
+                ft.Text("--", size=24, weight=ft.FontWeight.BOLD, color=colores["texto"]),
+            ],
+            spacing=4,
+        ),
+        bgcolor=colores["panel"],
+        border_radius=8,
+        padding=12,
+        expand=True,
+    )
+
+def crear_historial():
+    # filtros y botones
+    filtros = caja(
+        "Filtros",
+        ft.Row(
+            controls=[
+                dropdown("Variable", aj.VARIABLES, 245),
+                dropdown("Rango", aj.RANGOS_HISTORIAL, 160),
+                ft.Container(expand=True), 
+            ],
+            spacing=10,
+        ),
+    )
+
+    # Resumen
+    resumen = ft.Row(
+        controls=[
+            tarjeta_resumen("Mínimo"),
+            tarjeta_resumen("Máximo"),
+            tarjeta_resumen("Promedio"),
+        ],
+        spacing=10,
+    )
+
+    # Grafica del historial
+    grafica = caja("Gráfica del historial", dibujar_graficas(), expand=3)
+
+    # Tabla de lecturas
+    lecturas = caja("Lecturas registradas", tabla(aj.COLUMNAS_HISTORIAL), expand=1)
+
+    return ft.Column(
+        controls=[filtros, resumen, grafica, lecturas],
+        spacing=10,
+        expand=True,
+    )
